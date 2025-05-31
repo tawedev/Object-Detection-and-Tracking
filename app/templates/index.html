@@ -1,0 +1,129 @@
+<!-- app/templates/index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détection en temps réel</title>
+    <style>
+        /* === Random Background Selection === */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            text-align: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            margin: 5% auto;
+            padding: 30px;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
+        }
+
+        input[type="file"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        video {
+            margin-top: 20px;
+            border-radius: 10px;
+            border: 4px solid #fff;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 16px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+    </style>
+    <script>
+        // Set a random background image from 1 to 4
+        const backgrounds = [
+            "{{ url_for('static', filename='img1.jpg') }}",
+            "{{ url_for('static', filename='img2.jpg') }}",
+            "{{ url_for('static', filename='img3.jpg') }}",
+            "{{ url_for('static', filename='img4.jpg') }}"
+        ];
+        document.addEventListener("DOMContentLoaded", function() {
+            const index = Math.floor(Math.random() * backgrounds.length);
+            document.body.style.backgroundImage = `url('${backgrounds[index]}')`;
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Détection d'objets dans une vidéo</h1>
+
+        <form action="/" method="post" enctype="multipart/form-data">
+            <label>Choisir une vidéo :</label>
+            <input type="file" name="video" required>
+
+            <label>Objet à détecter (ex: ambulance, voiture, personne) :</label>
+            <input type="text" name="target_class" placeholder="ambulance" required>
+
+            <button type="submit">Lancer la détection</button>
+        </form>
+
+        {% if video_path %}
+            <h2>Vidéo analysée :</h2>
+            <video width="600" controls>
+                <source src="{{ url_for('static', filename=video_path) }}" type="video/mp4">
+            </video>
+
+            <br><br>
+            <a href="{{ url_for('static', filename='tracking_log.txt') }}" download>Télécharger le fichier de log</a>
+        {% endif %}
+    </div>
+</body>
+</html>
